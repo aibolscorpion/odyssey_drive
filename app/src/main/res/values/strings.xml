@@ -3,7 +3,7 @@
 
     ////////////////////////////////////////////////////////////////
 
-    <string name="home">Домой</string>
+    <string name="main">Главная</string>
     <string name="my_assignments">Мои задания</string>
     <string name="profile">Профиль</string>
     <string name="back_button">Кнопка Назад</string>
@@ -20,11 +20,11 @@
     <string name="assigment_for_today">Задания на сегодня</string>
     <string name="to_the_line">На линию</string>
     <string name="pause">Перерыв</string>
+    <string name="resume">Возобновить</string>
     <string name="finish_shift">Закончить смену</string>
     <string name="shift_lasts">Смена длится: </string>
+    <string name="shift_on_pause">Смена на паузе</string>
     <string name="all">всего</string>
-    <string name="completed">завершено</string>
-    <string name="cancelled">отменено</string>
     <string name="nearest_assignment">Ближайшее задание</string>
     <string name="human">человек</string>
 
@@ -40,26 +40,44 @@
     //Профиль
     <string name="my_profile">Мой профиль</string>
     <string name="surname_name_patronymic">ФИО</string>
-    <string name="working_hours">Рабочие часы</string>
     <string name="vehicle">Транспорт</string>
     <string name="car_number">Госномер</string>
     <string name="number_of_seats">Посадочныx мест</string>
     <string name="logout">Выйти</string>
 
     //Страница Задание
-    <string name="assigment">Задание</string>
+    <string name="assignment">Задание</string>
     <string name="status">Статус</string>
     <string name="id">ID</string>
     <string name="date">Дата</string>
-    <string name="plan_time">План.время</string>
-    <string name="passanger_amount">Кол-во пассажиров</string>
+    <string name="plan_time">План. время</string>
+    <string name="actual_time">Факт. время</string>
+    <string name="passenger_amount">Кол-во пассажиров</string>
 
     <string name="start_assignment">Начать выполнение</string>
-    <string name="passanger_list">Список пассажиров</string>
+    <string name="passenger_list">Список пассажиров</string>
     <string name="cancel_assignment">Отменить задание</string>
     <string name="finish">Завершить</string>
 
-    <string name="passangers">Пассажиры</string>
+    <string name="passengers">Пассажиры</string>
+    <string name="assignment_completed">Задание завершено</string>
+    <string name="next_assignment">Следующее задание</string>
+    <string name="to_the_list_of_assignments">К списку заданий</string>
+
+    <string name="assigned">Назначено</string>
+    <string name="on_the_waiting">Ожидает выполнения</string>
+    <string name="in_progress">В работе</string>
+    <string name="completed">завершено</string>
+    <string name="cancelled_lowercase">отменено</string>
+
+
+    <string name="cancel_reason">Причина отмены: </string>
+    <string name="fill_cancel_reason">Введите причину отмены…</string>
+    <string name="you_started_assignment">Вы начали задание</string>
+    <string name="started">Начало</string>
+    <string name="end">Конец</string>
+    <string name="return_back">Вернуться назад</string>
+    <string name="cancelled">Отменено</string>
 
 
 
