@@ -2,7 +2,7 @@ package kz.divtech.odyssey.drive.data.dto.main
 
 
 import com.google.gson.annotations.SerializedName
-import kz.divtech.odyssey.drive.common.DateTimeUtils.toLocalDateTime
+import kz.divtech.odyssey.drive.common.DateTimeUtils.parseToLocalDateTime
 import kz.divtech.odyssey.drive.domain.model.main.ShiftTime
 import kz.divtech.odyssey.drive.domain.model.main.toShiftStatus
 
@@ -14,4 +14,4 @@ data class ShiftTimeDto(
 )
 
 fun ShiftTimeDto.toShiftTime() =
-    ShiftTime(shiftRoutineStartTime = shiftRoutineStartTime.toLocalDateTime(), shiftStatus = dailyStatus.toShiftStatus())
+    ShiftTime(shiftRoutineStartTime = shiftRoutineStartTime?.parseToLocalDateTime(), shiftStatus = dailyStatus.toShiftStatus())

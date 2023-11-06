@@ -1,4 +1,4 @@
-package kz.divtech.odyssey.drive.domain.model.login
+package kz.divtech.odyssey.drive.domain.model.auth
 
 class LogoutState(
     val isLoading: Boolean = false,

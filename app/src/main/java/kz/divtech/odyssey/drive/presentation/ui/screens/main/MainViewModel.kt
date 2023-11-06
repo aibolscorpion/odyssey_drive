@@ -55,19 +55,20 @@ class MainViewModel @Inject constructor(private val dailyInfoUseCase: GetDailyIn
     }
 
     fun getDailyInfo(){
+
         viewModelScope.launch {
-            dailyInfoUseCase.getDailyInfo().onEach { result ->
-                when(result){
-                    is Resource.Success -> {
-                        _dailyInfoState.value = DailyInfoState(
-                            dailyInfo = result.data ?: emptyDailyInfo)
+                dailyInfoUseCase.getDailyInfo().onEach { result ->
+                    when(result){
+                        is Resource.Success -> {
+                            _dailyInfoState.value = DailyInfoState(
+                                dailyInfo = result.data ?: emptyDailyInfo)
+                        }
+                        is Resource.Loading -> _dailyInfoState.value = DailyInfoState(isLoading = true)
+                        is Resource.Error -> _dailyInfoState.value = DailyInfoState(error = result.message ?: "")
                     }
-                    is Resource.Loading -> _dailyInfoState.value = DailyInfoState(isLoading = true)
-                    is Resource.Error -> _dailyInfoState.value = DailyInfoState(error = result.message ?: "")
-                }
-            }.launchIn(viewModelScope)
+                }.launchIn(viewModelScope)
+            }
         }
-    }
 
     private fun getProfile(){
         viewModelScope.launch {

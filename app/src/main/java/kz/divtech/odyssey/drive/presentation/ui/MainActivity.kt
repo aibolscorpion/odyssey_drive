@@ -12,15 +12,20 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
@@ -45,12 +50,12 @@ import kz.divtech.odyssey.drive.R
 import kz.divtech.odyssey.drive.presentation.ui.screens.BottomNavItem
 import kz.divtech.odyssey.drive.presentation.ui.screens.Screens
 import kz.divtech.odyssey.drive.presentation.ui.screens.main.MainScreen
-import kz.divtech.odyssey.drive.presentation.ui.screens.my_tasks.MyAssignmentsScreen
+import kz.divtech.odyssey.drive.presentation.ui.screens.my_tasks.MyTasksScreen
 import kz.divtech.odyssey.drive.presentation.ui.screens.profile.ProfileScreen
 import kz.divtech.odyssey.drive.presentation.ui.screens.login.LoginScreen
 import kz.divtech.odyssey.drive.presentation.ui.screens.task_detail.AssignmentDetailScreen
 import kz.divtech.odyssey.drive.presentation.ui.screens.task_detail.CompletedScreen
-import kz.divtech.odyssey.drive.presentation.ui.screens.task_detail.PassengerListScreen
+import kz.divtech.odyssey.drive.presentation.ui.screens.task_detail.passengers.PassengerListScreen
 import kz.divtech.odyssey.drive.presentation.theme.ColorPrimary
 import kz.divtech.odyssey.drive.presentation.theme.GreyAlpha50
 
@@ -71,13 +76,13 @@ class MainActivity : ComponentActivity() {
 fun MainScreenView(mainViewModel: MainActivityViewModel = hiltViewModel()){
     val title: String by mainViewModel.title.observeAsState(stringResource(R.string.app_name))
     val navController = rememberNavController()
+    val snackBarHostState = remember { SnackbarHostState() }
 
     val bottomBarState: Boolean
     val topBarState: Boolean
     val canNavigateBack: Boolean
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
-
     when(navBackStackEntry?.destination?.route){
         null, Screens.LOGIN.name -> {
             bottomBarState = false
@@ -105,6 +110,13 @@ fun MainScreenView(mainViewModel: MainActivityViewModel = hiltViewModel()){
 
 
     Scaffold(
+        snackbarHost = {
+            SnackbarHost(hostState = snackBarHostState,
+            snackbar = { data ->
+                Snackbar(snackbarData = data,
+                    containerColor = MaterialTheme.colorScheme.error)
+            })
+        },
         containerColor = Color.White,
         topBar = {
             Column {
@@ -123,7 +135,7 @@ fun MainScreenView(mainViewModel: MainActivityViewModel = hiltViewModel()){
         }
     ){ padding ->
         Box(modifier = Modifier.padding(padding)){
-            NavigationGraph(mainViewModel = mainViewModel, navController = navController)
+            NavigationGraph(mainViewModel = mainViewModel, navController = navController, snackBarHostState)
         }
     }
 }
@@ -164,40 +176,29 @@ fun TopAppBar(isVisible: Boolean, title: String, canNavigateBack: Boolean = fals
 }
 
 @Composable
-fun NavigationGraph(mainViewModel: MainActivityViewModel, navController: NavHostController) {
+fun NavigationGraph(mainViewModel: MainActivityViewModel, navController: NavHostController, snackBarHostState: SnackbarHostState) {
     NavHost(navController, startDestination = getStartDestination(mainViewModel)) {
         composable(Screens.LOGIN.name) {
-            val openMainScreen = {
-                navController.navigate(BottomNavItem.Main.screen_route) {
-                    popUpTo(0)
-                }
-            }
-            LoginScreen(openMainScreen = openMainScreen)
+            LoginScreen(snackBarHostState = snackBarHostState)
         }
 
-        val onTaskClick : (taskId: Int) -> Unit = { id ->
-            navController.navigate("ASSIGNMENT_DETAILS/${id}")
+        val onTaskClick : (taskId: Int) -> Unit = { taskId ->
+            navController.navigate("${Screens.ASSIGNMENT_DETAILS.name}/${taskId}")
         }
 
         composable(BottomNavItem.Main.screen_route) {
-            MainScreen(mainViewModel, onTaskClick = onTaskClick)
+            MainScreen(mainViewModel, onTaskClick = onTaskClick, snackBarHostState = snackBarHostState)
         }
 
         composable(BottomNavItem.MyAssignments.screen_route) {
-            MyAssignmentsScreen(mainViewModel, onTaskClicked = onTaskClick)
-        }
-
-        val onLogout = {
-            navController.navigate(Screens.LOGIN.name){
-                popUpTo(0)
-            }
+            MyTasksScreen(mainViewModel, onTaskClicked = onTaskClick, snackBarHostState = snackBarHostState)
         }
 
         composable(BottomNavItem.Profile.screen_route) {
-            ProfileScreen(mainViewModel = mainViewModel, onLogout = onLogout)
+            ProfileScreen(mainViewModel = mainViewModel, snackbarHostState = snackBarHostState)
         }
 
-        composable("ASSIGNMENT_DETAILS/{taskId}",
+        composable("${Screens.ASSIGNMENT_DETAILS.name}/{taskId}",
             arguments = listOf(
                 navArgument("taskId") {
                     defaultValue = 0
@@ -207,30 +208,46 @@ fun NavigationGraph(mainViewModel: MainActivityViewModel, navController: NavHost
         ){ navBackStackEntry ->
             val taskId = navBackStackEntry.arguments?.getInt("taskId")
             taskId?.let {
-                AssignmentDetailScreen(mainViewModel,
-                    onPassengerListClicked = { navController.navigate(Screens.LIST_OF_PASSENGERS.name) },
-                    onFinishedClicked = { navController.navigate(Screens.ASSIGNMENT_COMPLETED.name)},
-                    taskId = taskId
+                AssignmentDetailScreen(
+                    mainViewModel,
+                    onPassengerListClicked = { seatCount ->
+                        navController.navigate("${Screens.LIST_OF_PASSENGERS.name}/${taskId}/${seatCount}")
+                     },
+                    onCompleteClicked = { descText, taskTime ->
+                        navController.navigate("ASSIGNMENT_COMPLETED/${descText}/${taskTime}"){
+                            launchSingleTop = true
+                        }
+                    },
+                    taskId = taskId,
+                    snackbarHostState = snackBarHostState
                 )
             }
         }
 
-        composable(Screens.LIST_OF_PASSENGERS.name){
-            PassengerListScreen(mainViewModel)
+        composable("${Screens.LIST_OF_PASSENGERS.name}/{taskId}/{seatCount}",
+            arguments = listOf(
+                navArgument("taskId"){type = NavType.IntType },
+                navArgument("seatCount"){type = NavType.IntType }
+            )
+        ){ navBackStackEntry ->
+            val taskId = navBackStackEntry.arguments?.getInt("taskId") ?: 0
+            val seatCount = navBackStackEntry.arguments?.getInt("seatCount") ?: 0
+            PassengerListScreen(mainViewModel, taskId, seatCount, snackBarHostState = snackBarHostState)
         }
 
-        composable(Screens.ASSIGNMENT_COMPLETED.name){
+        composable("${Screens.ASSIGNMENT_COMPLETED.name}/{descText}/{taskTime}",
+            arguments = listOf(
+                navArgument("descText"){type = NavType.StringType},
+                navArgument("taskTime"){type = NavType.StringType},
+            )){ navBackStackEntry ->
+            val descText = navBackStackEntry.arguments?.getString("descText") ?: ""
+            val taskTime = navBackStackEntry.arguments?.getString("taskTime") ?: "00:00 - 00:00"
             CompletedScreen(
+                descText,
+                taskTime,
                 onAssignmentListClicked = {
                     navController.navigate(BottomNavItem.MyAssignments.screen_route){
                         popUpTo(Screens.ASSIGNMENT_DETAILS.name)
-                    }
-                },
-                onNextAssignmentClicked = {
-                    navController.navigate(Screens.ASSIGNMENT_DETAILS.name){
-                        popUpTo(Screens.ASSIGNMENT_DETAILS.name){
-                            inclusive = true
-                        }
                     }
                 })
         }
@@ -291,5 +308,3 @@ fun getStartDestination(mainViewModel: MainActivityViewModel): String{
             else -> Screens.LOGIN.name
         }
 }
-
-

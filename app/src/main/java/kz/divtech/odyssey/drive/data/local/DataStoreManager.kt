@@ -33,6 +33,6 @@ class DataStoreManager @Inject constructor(private val dataStore: DataStore<Pref
 
 
     @Composable
-    fun isLoggedIn() = getData(TOKEN_KEY).collectAsState("").value.isNotEmpty()
+    fun isLoggedIn() = getData(TOKEN_KEY).collectAsState("no_token").value.isNotEmpty()
 
 }

@@ -8,12 +8,15 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Card
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -22,6 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import kotlinx.coroutines.launch
 import kz.divtech.odyssey.drive.R
 import kz.divtech.odyssey.drive.common.Variables
 import kz.divtech.odyssey.drive.presentation.theme.OdysseyDriveTheme
@@ -30,14 +34,17 @@ import kz.divtech.odyssey.drive.presentation.ui.components.OutlinedButton
 @Preview(showSystemUi = true)
 @Composable
 fun CancelScreenPreview(){
-    CancelScreen(onReturnButtonClicked = {}, onCancelButtonClicked = {})
+    CancelScreen(onReturnButtonClicked = {}, onCancelButtonClicked = {}, SnackbarHostState())
 }
 
 @Composable
-fun CancelScreen(onReturnButtonClicked: () -> Unit, onCancelButtonClicked: (String) -> Unit){
+fun CancelScreen(onReturnButtonClicked: () -> Unit, onCancelButtonClicked: (String) -> Unit,
+    snackbarHostState: SnackbarHostState){
+
+    val scope = rememberCoroutineScope()
     OdysseyDriveTheme {
         val cancelReason = remember { mutableStateOf(TextFieldValue()) }
-
+        val context = LocalContext.current
         Dialog(onDismissRequest = {}){
             Card {
 
@@ -64,7 +71,7 @@ fun CancelScreen(onReturnButtonClicked: () -> Unit, onCancelButtonClicked: (Stri
                         placeholder = {
 
                             Text(
-                                text = stringResource(R.string.fill_cancel_reason),
+                                text = context.getString(R.string.fill_cancel_reason),
                                 style = TextStyle(
                                     fontSize = 14.sp,
                                     fontWeight = FontWeight(400),
@@ -74,7 +81,15 @@ fun CancelScreen(onReturnButtonClicked: () -> Unit, onCancelButtonClicked: (Stri
                         }
                     )
 
-                    Button(onClick = { onCancelButtonClicked(cancelReason.value.text) },
+                    Button(onClick = {
+                        if(cancelReason.value.text.isBlank()){
+                            scope.launch {
+                                snackbarHostState.showSnackbar(context.getString(R.string.fill_cancel_reason))
+                            }
+                        }else{
+                            onCancelButtonClicked(cancelReason.value.text)
+                        }
+                         },
                         modifier = Modifier
                         .padding(top = 24.dp)
                         .fillMaxWidth()

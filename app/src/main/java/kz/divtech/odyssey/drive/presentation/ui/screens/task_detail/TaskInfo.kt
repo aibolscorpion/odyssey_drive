@@ -15,20 +15,23 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kz.divtech.odyssey.drive.R
+import kz.divtech.odyssey.drive.common.Variables.PaddingDp
 import kz.divtech.odyssey.drive.domain.model.main.Task
-import kz.divtech.odyssey.drive.domain.model.DataSource
+import kz.divtech.odyssey.drive.domain.model.main.emptyTask
 import kz.divtech.odyssey.drive.presentation.ui.screens.profile.KeyValueText
 
 @Preview
 @Composable
 fun AssignmentInfoPreview(){
-    AssignmentInfo(DataSource.task)
+    AssignmentInfo(emptyTask)
 }
 
 @Composable
 fun AssignmentInfo(task: Task){
     Column {
         Text(text = task.departureArrivalPlace,
+            modifier = Modifier
+                .padding(bottom = PaddingDp),
             style = TextStyle(
                 fontSize = 20.sp,
                 lineHeight = 24.sp,
@@ -40,14 +43,15 @@ fun AssignmentInfo(task: Task){
 
         KeyValueText(key = R.string.status, valueComposable = { StatusText(task.status) })
         if(task.status == Status.CANCELLED){
-            KeyValueText(key = R.string.cancelled, value = task.time) }
+            KeyValueText(key = R.string.cancelled, valueComposable = { BoldText(task.cancelTime) })
+        }
         KeyValueText(key = R.string.id, value = task.id.toString())
         KeyValueText(key = R.string.date, value = task.date)
         when (task.status) {
             Status.COMPLETED -> {
                 KeyValueText(key = R.string.plan_time, value = task.time)
                 KeyValueText(key = R.string.actual_time,
-                    valueComposable = { BoldText(task.time) })
+                    valueComposable = { BoldText("${task.actualStartTime} - ${task.actualEndTime}") })
             }
 
             Status.CANCELLED -> {

@@ -1,6 +1,5 @@
 package kz.divtech.odyssey.drive.presentation.ui.screens.login
 
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -15,14 +14,15 @@ import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
+import kotlinx.coroutines.launch
 import kz.divtech.odyssey.drive.R
 import kz.divtech.odyssey.drive.common.Variables
 import kz.divtech.odyssey.drive.common.Variables.PaddingDp
@@ -44,22 +45,21 @@ import kz.divtech.odyssey.drive.presentation.ui.screens.main.CenterCircularProgr
 @Preview
 @Composable
 fun LoginScreenPreview(){
-    LoginScreen(viewModel(), openMainScreen = {})
+    LoginScreen(viewModel(), SnackbarHostState())
 }
 
 
 @Composable
-fun LoginScreen(viewModel: LoginViewModel = hiltViewModel(), openMainScreen: () -> Unit){
+fun LoginScreen(viewModel: LoginViewModel = hiltViewModel(),
+                snackBarHostState: SnackbarHostState){
 
-    val context = LocalContext.current
     val state = viewModel.state.value
-
-    if(state.loggedIn){
-        openMainScreen()
-    }
+    val scope = rememberCoroutineScope()
 
     if(state.error.isNotBlank()) {
-        Toast.makeText(context, state.error, Toast.LENGTH_LONG).show()
+        scope.launch {
+            snackBarHostState.showSnackbar(state.error)
+        }
     }
 
     OdysseyDriveTheme {

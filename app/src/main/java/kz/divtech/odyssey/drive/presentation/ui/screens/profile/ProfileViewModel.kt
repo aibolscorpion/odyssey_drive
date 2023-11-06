@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kz.divtech.odyssey.drive.common.Resource
-import kz.divtech.odyssey.drive.domain.model.login.LogoutState
+import kz.divtech.odyssey.drive.domain.model.auth.LogoutState
 import kz.divtech.odyssey.drive.domain.model.profile.ProfileState
 import kz.divtech.odyssey.drive.domain.model.profile.emptyProfile
 import kz.divtech.odyssey.drive.domain.use_case.profile.GetProfileUseCase

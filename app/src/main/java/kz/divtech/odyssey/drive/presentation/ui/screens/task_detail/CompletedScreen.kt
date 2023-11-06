@@ -5,10 +5,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,14 +28,15 @@ import kz.divtech.odyssey.drive.presentation.ui.components.OutlinedButton
 @Preview
 @Composable
 fun CompletedScreenPreview(){
-    CompletedScreen(onNextAssignmentClicked = {}, onAssignmentListClicked = {})
+    CompletedScreen("№1 Выполнение вовремя",
+        "00:00 - 00:00",
+        onAssignmentListClicked = {})
 }
 
 @Composable
-fun CompletedScreen(onNextAssignmentClicked: () -> Unit, onAssignmentListClicked: () -> Unit){
-    val assignmentId = "00163"
-    val assignmentStartedTime = "12:25"
-    val assignmentFinishedTime = "13:56"
+fun CompletedScreen(descriptionText: String,
+                    taskTime: String,
+                    onAssignmentListClicked: () -> Unit){
 
     OdysseyDriveTheme {
 
@@ -72,7 +71,7 @@ fun CompletedScreen(onNextAssignmentClicked: () -> Unit, onAssignmentListClicked
                 )
 
                 Text(
-                    text = "№$assignmentId, сегодня, выполнено вовремя",
+                    text = descriptionText,
                     modifier = Modifier
                         .padding(top = 7.dp),
                     style = TextStyle(
@@ -83,7 +82,7 @@ fun CompletedScreen(onNextAssignmentClicked: () -> Unit, onAssignmentListClicked
                 )
 
                 Text(
-                    text = "$assignmentStartedTime — $assignmentFinishedTime",
+                    text = taskTime,
                     modifier = Modifier
                         .padding(top = Variables.PaddingDp),
                     style = TextStyle(
@@ -97,22 +96,6 @@ fun CompletedScreen(onNextAssignmentClicked: () -> Unit, onAssignmentListClicked
 
             Spacer(modifier = Modifier
                 .weight(1f))
-
-            Button(onClick = { onNextAssignmentClicked() },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(Variables.ButtonHeight)
-            ){
-                Text(
-                    text = stringResource(R.string.next_assignment),
-                    style = TextStyle(
-                        fontSize = 15.sp,
-                        lineHeight = 24.sp,
-                        fontWeight = FontWeight(600),
-                        color = Color.White,
-                    )
-                )
-            }
 
             OutlinedButton(
                 text = stringResource(R.string.to_the_list_of_assignments),

@@ -1,9 +1,9 @@
-package kz.divtech.odyssey.drive.data.dto.task_detail
+package kz.divtech.odyssey.drive.data.dto.task_detail.passengers
 
 
 import com.google.gson.annotations.SerializedName
 
-data class PassengerApplicationPair(
+data class PassengerListDtoItem(
     @SerializedName("application")
     val application: Application,
     @SerializedName("created_at")
@@ -13,7 +13,7 @@ data class PassengerApplicationPair(
     @SerializedName("is_passed")
     val isPassed: Boolean,
     @SerializedName("passenger")
-    val passenger: Passenger,
+    val passengerDto: PassengerDto,
     @SerializedName("seat_number")
     val seatNumber: Int
 )

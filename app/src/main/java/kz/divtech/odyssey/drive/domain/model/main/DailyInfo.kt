@@ -2,7 +2,7 @@ package kz.divtech.odyssey.drive.domain.model.main
 
 
 data class DailyInfo(
-    val activeTaskCount: Int,
+    val taskCount: Int,
     val completedTaskCount: Int,
     val cancelledTaskCount: Int,
     val nearestTask: Task?

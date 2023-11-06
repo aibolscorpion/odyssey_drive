@@ -26,7 +26,7 @@ data class DailyInfoDto(
 fun DailyInfoDto.toDailyInfo(): DailyInfo{
 
     return DailyInfo(
-        activeTaskCount = activeTaskCount,
+        taskCount = taskCount,
         completedTaskCount = completedTaskCount,
         cancelledTaskCount = rejectedTaskCount,
         nearestTask = nearestTask?.toTask()

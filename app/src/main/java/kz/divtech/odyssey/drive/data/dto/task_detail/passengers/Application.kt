@@ -1,4 +1,4 @@
-package kz.divtech.odyssey.drive.data.dto.task_detail
+package kz.divtech.odyssey.drive.data.dto.task_detail.passengers
 
 
 import com.google.gson.annotations.SerializedName

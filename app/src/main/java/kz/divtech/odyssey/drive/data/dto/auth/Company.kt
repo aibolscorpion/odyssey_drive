@@ -1,4 +1,4 @@
-package kz.divtech.odyssey.drive.data.dto.login
+package kz.divtech.odyssey.drive.data.dto.auth
 
 
 import com.google.gson.annotations.SerializedName

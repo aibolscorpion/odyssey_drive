@@ -9,8 +9,8 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kz.divtech.odyssey.drive.common.Resource
-import kz.divtech.odyssey.drive.domain.model.login.LoginRequest
-import kz.divtech.odyssey.drive.domain.model.login.LoginState
+import kz.divtech.odyssey.drive.domain.model.auth.LoginRequest
+import kz.divtech.odyssey.drive.domain.model.auth.LoginState
 import kz.divtech.odyssey.drive.domain.use_case.auth.LoginUseCase
 import javax.inject.Inject
 

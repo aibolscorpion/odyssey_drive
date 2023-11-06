@@ -1,9 +1,9 @@
-package kz.divtech.odyssey.drive.data.dto.task_detail
+package kz.divtech.odyssey.drive.data.dto.task_detail.passengers
 
 
 import com.google.gson.annotations.SerializedName
 
-data class Passenger(
+data class PassengerDto(
     @SerializedName("created_at")
     val createdAt: String,
     @SerializedName("full_name")

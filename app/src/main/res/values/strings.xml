@@ -60,6 +60,7 @@
     <string name="finish">Завершить</string>
 
     <string name="passengers">Пассажиры</string>
+    <string name="free">Свободно</string>
     <string name="assignment_completed">Задание завершено</string>
     <string name="next_assignment">Следующее задание</string>
     <string name="to_the_list_of_assignments">К списку заданий</string>

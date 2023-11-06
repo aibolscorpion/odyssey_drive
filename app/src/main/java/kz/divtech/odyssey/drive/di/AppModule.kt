@@ -27,6 +27,7 @@ import kz.divtech.odyssey.drive.domain.repository.ShiftRepository
 import kz.divtech.odyssey.drive.domain.repository.TaskRepository
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.internal.http.HTTP_UNAUTHORIZED
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -49,7 +50,6 @@ object AppModule {
     }
 
     @Provides
-    @Singleton
     fun provideApiService(dataStoreManager: DataStoreManager): ApiService {
         val token = runBlocking { dataStoreManager.getData(TOKEN_KEY).firstOrNull() ?: ""}
          val okHttpClient = OkHttpClient.Builder()
@@ -58,9 +58,14 @@ object AppModule {
                  val request: Request = chain.request().newBuilder()
                      .addHeader(Constants.AUTHORIZATION_KEY, "${Constants.AUTHORIZATION_VALUE_PREFIX} $token")
                      .build()
-                 chain.proceed(request)
-             })
-            .build()
+                 val response = chain.proceed(request)
+                 if(response.code == HTTP_UNAUTHORIZED){
+                     runBlocking {
+                         dataStoreManager.saveData(TOKEN_KEY, "")
+                     }
+                 }
+                 response
+             }).build()
 
         return Retrofit.Builder()
             .baseUrl(Constants.BASE_URL)
@@ -71,34 +76,30 @@ object AppModule {
     }
 
     @Provides
-    @Singleton
     fun provideLoginRepository(api: ApiService, dataStoreManager: DataStoreManager): AuthRepository {
         return AuthRepositoryImpl(api, dataStoreManager)
 
     }
 
     @Provides
-    @Singleton
     fun provideProfileRepository(api: ApiService): ProfileRepository {
         return ProfileRepositoryImpl(api)
     }
 
     @Provides
-    @Singleton
     fun provideDailyInfoRepository(api: ApiService): DailyInfoRepository{
         return DailyInfoRepositoryImpl(api)
     }
 
     @Provides
-    @Singleton
     fun provideShiftRepository(api: ApiService): ShiftRepository{
         return ShiftRepositoryImpl(api)
     }
 
     @Provides
-    @Singleton
     fun provideTaskRepository(api: ApiService): TaskRepository{
         return TaskRepositoryImpl(api)
     }
+
 
 }

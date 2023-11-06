@@ -1,6 +1,5 @@
 package kz.divtech.odyssey.drive.presentation.ui.screens.profile
 
-import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -11,13 +10,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
+import kotlinx.coroutines.launch
 import kz.divtech.odyssey.drive.R
 import kz.divtech.odyssey.drive.presentation.ui.MainActivityViewModel
 import kz.divtech.odyssey.drive.common.Variables
@@ -40,28 +41,29 @@ import kz.divtech.odyssey.drive.presentation.ui.screens.main.CenterCircularProgr
 @Preview
 @Composable
 fun ProfileScreenPreview(){
-    ProfileScreen(mainViewModel = viewModel(), profileViewModel = viewModel(), onLogout = {})
+    ProfileScreen(mainViewModel = viewModel(), profileViewModel = viewModel(), SnackbarHostState())
 }
 
 @Composable
 fun ProfileScreen(mainViewModel: MainActivityViewModel,
                   profileViewModel: ProfileViewModel = hiltViewModel(),
-                  onLogout: () -> Unit) {
-    val context = LocalContext.current
+                snackbarHostState: SnackbarHostState) {
+
+    val scope = rememberCoroutineScope()
     val profileState = profileViewModel.profileState.value
     val logoutState = profileViewModel.logoutState.value
 
     val profile: Profile = profileState.profile
     if(profileState.error.isNotBlank()) {
-        Toast.makeText(context, profileState.error, Toast.LENGTH_LONG).show()
+        scope.launch {
+            snackbarHostState.showSnackbar(profileState.error)
+        }
     }
 
     if(logoutState.error.isNotBlank()){
-        Toast.makeText(context, profileState.error, Toast.LENGTH_LONG).show()
-    }
-
-    if(logoutState.isLoggedOut){
-        onLogout()
+        scope.launch {
+            snackbarHostState.showSnackbar(logoutState.error)
+        }
     }
 
     OdysseyDriveTheme {
