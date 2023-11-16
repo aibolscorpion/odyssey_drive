@@ -8,7 +8,7 @@ data class ProfileDto(
     @SerializedName("created_at")
     val createdAt: String,
     @SerializedName("current_vehicle")
-    val currentVehicle: CurrentVehicle,
+    val currentVehicle: CurrentVehicle?,
     @SerializedName("daily_status")
     val dailyStatus: String,
     val id: Int,
@@ -25,6 +25,8 @@ fun ProfileDto.toProfile() =
     Profile(name = name,
         surname = surname,
         patronymic = middleName,
-        vehicleName = "${currentVehicle.mark.name} ${currentVehicle.model.name} ${currentVehicle.year}",
-        stateNumber = currentVehicle.stateNumber,
-        seatCount = currentVehicle.seatCount)
+        vehicleName = if(currentVehicle != null)
+            "${currentVehicle.mark.name} ${currentVehicle.model.name} ${currentVehicle.year}"
+        else "",
+        stateNumber = currentVehicle?.stateNumber ?: "",
+        seatCount = currentVehicle?.seatCount ?: 0)

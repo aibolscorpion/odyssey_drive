@@ -57,13 +57,13 @@ class MainViewModel @Inject constructor(private val dailyInfoUseCase: GetDailyIn
     fun getDailyInfo(){
 
         viewModelScope.launch {
-                dailyInfoUseCase.getDailyInfo().onEach { result ->
+                dailyInfoUseCase.execute(Unit).onEach { result ->
                     when(result){
                         is Resource.Success -> {
-                            _dailyInfoState.value = DailyInfoState(
-                                dailyInfo = result.data ?: emptyDailyInfo)
+                            _dailyInfoState.value = DailyInfoState(dailyInfo = result.data ?: emptyDailyInfo)
                         }
-                        is Resource.Loading -> _dailyInfoState.value = DailyInfoState(isLoading = true)
+
+                        is Resource.Loading -> _dailyInfoState.value = _dailyInfoState.value.copy(isLoading = true)
                         is Resource.Error -> _dailyInfoState.value = DailyInfoState(error = result.message ?: "")
                     }
                 }.launchIn(viewModelScope)
@@ -72,7 +72,7 @@ class MainViewModel @Inject constructor(private val dailyInfoUseCase: GetDailyIn
 
     private fun getProfile(){
         viewModelScope.launch {
-            val response = getProfileUseCase.getProfile()
+            val response = getProfileUseCase.execute(Unit)
             response.onEach { result ->
                 when(result){
                     is Resource.Success -> _profileState.value = ProfileState(profile = result.data ?: emptyProfile)
@@ -86,28 +86,28 @@ class MainViewModel @Inject constructor(private val dailyInfoUseCase: GetDailyIn
 
     fun activateShift(){
         viewModelScope.launch {
-            val response = activateUseCase.activateShift()
+            val response = activateUseCase.execute(Unit)
             defineResource(response, ShiftStatus.ONLINE)
         }
     }
 
     fun pauseShift(){
         viewModelScope.launch {
-            val response = pauseUseCase.pauseShift()
+            val response = pauseUseCase.execute(Unit)
             defineResource(response, ShiftStatus.ON_BREAK)
         }
     }
 
     fun resumeShift(){
         viewModelScope.launch {
-            val response = resumeUseCase.resumeShift()
+            val response = resumeUseCase.execute(Unit)
             defineResource(response, ShiftStatus.ONLINE)
         }
     }
 
     fun deactivateShift(){
         viewModelScope.launch {
-            val response = deactivateUseCase.deactivateShift()
+            val response = deactivateUseCase.execute(Unit)
             defineResource(response, ShiftStatus.OFFLINE)
         }
     }
@@ -124,7 +124,7 @@ class MainViewModel @Inject constructor(private val dailyInfoUseCase: GetDailyIn
 
     fun getShiftTime(){
         viewModelScope.launch {
-            val response = getShiftTime.getShiftTime()
+            val response = getShiftTime.execute(Unit)
             response.onEach { result ->
                 when(result){
                     is Resource.Success -> {

@@ -80,6 +80,8 @@
     <string name="return_back">Вернуться назад</string>
     <string name="cancelled">Отменено</string>
 
+    <string name="fetching_data_from_server">Получение данных с сервера</string>
+    <string name="retry">Повторить попытку</string>
 
 
 

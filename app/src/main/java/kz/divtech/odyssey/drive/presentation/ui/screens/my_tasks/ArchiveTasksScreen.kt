@@ -30,7 +30,6 @@ import kz.divtech.odyssey.drive.common.Variables
 import kz.divtech.odyssey.drive.domain.model.main.Task
 import kz.divtech.odyssey.drive.presentation.theme.ColorPrimaryText
 import kz.divtech.odyssey.drive.presentation.theme.ColorTypoSecondary
-import kz.divtech.odyssey.drive.presentation.ui.screens.main.CenterCircularProgressIndicator
 import kz.divtech.odyssey.drive.presentation.ui.screens.task_detail.StatusText
 
 
@@ -53,39 +52,42 @@ fun ArchiveTasksScreen(viewModel: MyTasksViewModel, onAssignmentClicked: (taskId
                 ArchiveTaskItem(onAssignmentClicked, task = taskPagingItems[index]!!)
             }
 
-            taskPagingItems.apply {
-                when{
-                    loadState.refresh is LoadState.Loading -> {
-                        item { CenterCircularProgressIndicator() }
-                    }
+//            when(taskPagingItems.loadState.refresh) {
+//                is LoadState.Loading -> {
+//                    item { CenterCircularProgressIndicator() }
+//                }
+//
+//                is LoadState.Error -> {
+//                    val error = taskPagingItems.loadState.refresh as LoadState.Error
+//                    item {
+//                        scope.launch {
+//                            snackBarHostState.showSnackbar(error.error.localizedMessage!!)
+//                        }
+//                    }
+//                }
+//
+//                else -> {}
+//            }
+//
+//            when(taskPagingItems.loadState.append){
+//                is LoadState.Loading -> {
+//                    item {
+//                        CenterCircularProgressIndicator()
+//                    }
+//                }
+//
+//                is LoadState.Error -> {
+//                    val error = taskPagingItems.loadState.append as LoadState.Error
+//                    item {
+//                        scope.launch {
+//                            snackBarHostState.showSnackbar(error.error.localizedMessage!!)
+//                        }
+//                    }
+//                }
+//                else -> {}
+//            }
 
-                    loadState.refresh is LoadState.Error -> {
-                        val error = taskPagingItems.loadState.refresh as LoadState.Error
-                        item {
-                            scope.launch {
-                                snackBarHostState.showSnackbar(error.error.localizedMessage!!)
-                                }
-                            }
-                    }
-
-                    loadState.append is LoadState.Loading -> {
-                        item {
-                            CenterCircularProgressIndicator()
-                        }
-                    }
-
-                    loadState.append is LoadState.Error -> {
-                        val error = taskPagingItems.loadState.append as LoadState.Error
-                        item {
-                            scope.launch {
-                                snackBarHostState.showSnackbar(error.error.localizedMessage!!)
-                            }
-                        }
-                    }
-                }
-            }
         }
-
     }
 }
 

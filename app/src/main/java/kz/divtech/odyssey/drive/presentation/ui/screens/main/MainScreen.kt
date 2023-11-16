@@ -117,7 +117,7 @@ fun MainScreen(mainActivityViewModel: MainActivityViewModel,
 
             while(true){
                 mainViewModel.getDailyInfo()
-                delay(10.minutes)
+                delay(10.seconds)
             }
         }
 

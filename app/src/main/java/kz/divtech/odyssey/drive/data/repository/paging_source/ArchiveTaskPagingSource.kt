@@ -1,4 +1,4 @@
-package kz.divtech.odyssey.drive.data.paging_source
+package kz.divtech.odyssey.drive.data.repository.paging_source
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState

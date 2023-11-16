@@ -27,7 +27,7 @@ class MyTasksViewModel @Inject constructor(private val getActiveTasksUseCase: Ge
 
     fun getActiveTasks(date: LocalDate){
         viewModelScope.launch {
-            getActiveTasksUseCase.getActiveTasks(date)
+            getActiveTasksUseCase.execute(date)
                 .distinctUntilChanged()
                 .cachedIn(viewModelScope)
                 .collect{
@@ -38,7 +38,7 @@ class MyTasksViewModel @Inject constructor(private val getActiveTasksUseCase: Ge
 
     fun getArchiveTasks() {
         viewModelScope.launch {
-            getArchiveTasksUseCase.getArchiveTasks()
+            getArchiveTasksUseCase.execute(Unit)
                 .distinctUntilChanged()
                 .cachedIn(viewModelScope)
                 .collect{

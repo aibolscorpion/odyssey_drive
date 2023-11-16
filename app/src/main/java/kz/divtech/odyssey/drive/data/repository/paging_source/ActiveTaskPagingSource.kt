@@ -1,4 +1,4 @@
-package kz.divtech.odyssey.drive.data.paging_source
+package kz.divtech.odyssey.drive.data.repository.paging_source
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
@@ -26,8 +26,8 @@ class ActiveTaskPagingSource (private val api: ApiService, private val date: Str
         }
     }
 
-    override fun getRefreshKey(state: PagingState<Int, Task>): Int {
-        return 1
+    override fun getRefreshKey(state: PagingState<Int, Task>): Int? {
+        return state.anchorPosition
     }
 
 

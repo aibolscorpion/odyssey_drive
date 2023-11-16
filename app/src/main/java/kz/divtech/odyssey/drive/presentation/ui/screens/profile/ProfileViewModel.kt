@@ -32,7 +32,7 @@ class ProfileViewModel @Inject constructor(private val useCase: GetProfileUseCas
 
     private fun getProfile(){
         viewModelScope.launch {
-            val response = useCase.getProfile()
+            val response = useCase.execute(Unit)
             response.onEach { result ->
                 when(result){
                     is Resource.Success -> _profileState.value = ProfileState(profile = result.data ?: emptyProfile)
@@ -45,7 +45,7 @@ class ProfileViewModel @Inject constructor(private val useCase: GetProfileUseCas
 
     fun logout(){
         viewModelScope.launch {
-            val response = logoutUseCase.logout()
+            val response = logoutUseCase.execute(Unit)
             response.onEach { result ->
                 when(result){
                     is Resource.Success -> _logoutState.value = LogoutState(isLoggedOut = result.data ?: false)

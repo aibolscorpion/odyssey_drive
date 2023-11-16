@@ -34,7 +34,7 @@ class TaskDetailViewModel @Inject constructor(
 
      fun getTaskById(id: Int){
          viewModelScope.launch {
-             getTaskUseCase.getTaskById(id).onEach { result ->
+             getTaskUseCase.execute(id).onEach { result ->
                  when(result){
                      is Resource.Success -> {
                          _taskDetailState.value = TaskDetailState(task = result.data ?: emptyTask)
@@ -48,7 +48,7 @@ class TaskDetailViewModel @Inject constructor(
 
     fun beginTask(taskId: Int){
         viewModelScope.launch {
-            beginTaskUseCase.beginTask(taskId).onEach { result ->
+            beginTaskUseCase.execute(taskId).onEach { result ->
                 when(result){
                     is Resource.Success -> {
                         getTaskById(taskId)
@@ -62,7 +62,7 @@ class TaskDetailViewModel @Inject constructor(
     }
     fun completeTask(taskId: Int){
         viewModelScope.launch {
-            completeTaskUseCase.completeTask(taskId).onEach{ result ->
+            completeTaskUseCase.execute(taskId).onEach{ result ->
                 when(result){
                     is Resource.Success -> {
                         getTaskById(taskId)
@@ -76,7 +76,7 @@ class TaskDetailViewModel @Inject constructor(
     }
     fun rejectTask(taskId: Int, comment: String){
         viewModelScope.launch {
-            rejectTaskUseCase.rejectTask(taskId, comment).onEach{ result ->
+            rejectTaskUseCase.execute(taskId, comment).onEach{ result ->
                 when(result){
                     is Resource.Success -> {
                         getTaskById(taskId)

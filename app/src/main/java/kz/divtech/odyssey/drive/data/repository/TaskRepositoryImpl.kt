@@ -6,15 +6,15 @@ import androidx.paging.PagingData
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kz.divtech.odyssey.drive.common.Constants.TASK_PAGE_SIZE
+import kz.divtech.odyssey.drive.common.Constants.MAX_PAGE_SIZE
 import kz.divtech.odyssey.drive.common.DateTimeUtils.formatToStringDate
 import kz.divtech.odyssey.drive.common.Resource
 import kz.divtech.odyssey.drive.data.dto.main.BadRequest
 import kz.divtech.odyssey.drive.data.dto.task_detail.TaskActionResponse
 import kz.divtech.odyssey.drive.data.dto.task_detail.passengers.toPassengerList
 import kz.divtech.odyssey.drive.data.dto.task_detail.toTask
-import kz.divtech.odyssey.drive.data.paging_source.ActiveTaskPagingSource
-import kz.divtech.odyssey.drive.data.paging_source.ArchiveTaskPagingSource
+import kz.divtech.odyssey.drive.data.repository.paging_source.ActiveTaskPagingSource
+import kz.divtech.odyssey.drive.data.repository.paging_source.ArchiveTaskPagingSource
 import kz.divtech.odyssey.drive.data.remote.ApiService
 import kz.divtech.odyssey.drive.domain.model.task_detail.Passenger
 import kz.divtech.odyssey.drive.domain.model.main.Task
@@ -42,7 +42,7 @@ class TaskRepositoryImpl @Inject constructor(private val api: ApiService): TaskR
 
     override suspend fun getActiveTasks(date: LocalDate): Flow<PagingData<Task>> {
         return Pager(
-            config = PagingConfig(pageSize = TASK_PAGE_SIZE),
+            config = PagingConfig(pageSize = MAX_PAGE_SIZE, prefetchDistance = 2),
             pagingSourceFactory = {
                 ActiveTaskPagingSource(api = api, date.formatToStringDate())
             }
@@ -51,7 +51,7 @@ class TaskRepositoryImpl @Inject constructor(private val api: ApiService): TaskR
 
     override suspend fun getArchiveTasks(): Flow<PagingData<Task>> {
         return Pager(
-            config = PagingConfig(pageSize = TASK_PAGE_SIZE),
+            config = PagingConfig(pageSize = MAX_PAGE_SIZE, prefetchDistance = 2),
             pagingSourceFactory = {
                 ArchiveTaskPagingSource(api = api)
             }

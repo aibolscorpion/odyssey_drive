@@ -21,7 +21,7 @@ class PassengersViewModel @Inject constructor(private val getPassengersUseCase: 
 
     fun getPassengerList(taskId: Int){
         viewModelScope.launch {
-            getPassengersUseCase.getPassengerList(taskId).onEach { result ->
+            getPassengersUseCase.execute(taskId).onEach { result ->
                 when(result){
                     is Resource.Success -> _passengersState.value = PassengersState(passengerList = result.data ?: emptyList())
                     is Resource.Error -> _passengersState.value = PassengersState(error = result.message ?: "Произошла ошибка при получений списка пассажиров")

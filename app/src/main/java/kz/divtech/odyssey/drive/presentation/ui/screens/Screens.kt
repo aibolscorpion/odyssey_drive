@@ -3,6 +3,7 @@ package kz.divtech.odyssey.drive.presentation.ui.screens
 import kz.divtech.odyssey.drive.R
 
 enum class Screens {
+    LOADING,
     LOGIN,
     ASSIGNMENT_DETAILS,
     LIST_OF_PASSENGERS,

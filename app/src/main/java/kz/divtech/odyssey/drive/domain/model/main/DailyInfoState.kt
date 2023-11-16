@@ -1,7 +1,7 @@
 package kz.divtech.odyssey.drive.domain.model.main
 
 
-class DailyInfoState(
+data class DailyInfoState(
      val isLoading: Boolean = false,
      val error: String = "",
      val dailyInfo : DailyInfo = emptyDailyInfo

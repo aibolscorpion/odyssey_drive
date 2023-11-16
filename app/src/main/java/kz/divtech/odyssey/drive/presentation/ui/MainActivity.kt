@@ -47,6 +47,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import dagger.hilt.android.AndroidEntryPoint
 import kz.divtech.odyssey.drive.R
+import kz.divtech.odyssey.drive.common.Constants.LOADING
 import kz.divtech.odyssey.drive.presentation.ui.screens.BottomNavItem
 import kz.divtech.odyssey.drive.presentation.ui.screens.Screens
 import kz.divtech.odyssey.drive.presentation.ui.screens.main.MainScreen
@@ -58,6 +59,7 @@ import kz.divtech.odyssey.drive.presentation.ui.screens.task_detail.CompletedScr
 import kz.divtech.odyssey.drive.presentation.ui.screens.task_detail.passengers.PassengerListScreen
 import kz.divtech.odyssey.drive.presentation.theme.ColorPrimary
 import kz.divtech.odyssey.drive.presentation.theme.GreyAlpha50
+import kz.divtech.odyssey.drive.presentation.ui.screens.loading.LoadingScreen
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -177,7 +179,12 @@ fun TopAppBar(isVisible: Boolean, title: String, canNavigateBack: Boolean = fals
 
 @Composable
 fun NavigationGraph(mainViewModel: MainActivityViewModel, navController: NavHostController, snackBarHostState: SnackbarHostState) {
+
     NavHost(navController, startDestination = getStartDestination(mainViewModel)) {
+        composable(Screens.LOADING.name) {
+            LoadingScreen()
+        }
+
         composable(Screens.LOGIN.name) {
             LoginScreen(snackBarHostState = snackBarHostState)
         }
@@ -303,8 +310,11 @@ fun BottomNavigation(navController: NavController, isVisible: Boolean) {
 @Composable
 fun getStartDestination(mainViewModel: MainActivityViewModel): String{
     val dataStoreManager = mainViewModel.dataStoreManager
-    return when(dataStoreManager.isLoggedIn()){
-            true -> BottomNavItem.Main.screen_route
-            else -> Screens.LOGIN.name
+    return when(dataStoreManager.getTokenValue()){
+            "" -> Screens.LOGIN.name
+            LOADING -> Screens.LOADING.name
+            else -> BottomNavItem.Main.screen_route
         }
 }
+
+

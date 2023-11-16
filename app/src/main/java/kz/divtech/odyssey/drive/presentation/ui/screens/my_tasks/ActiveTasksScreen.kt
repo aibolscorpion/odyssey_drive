@@ -37,10 +37,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import kotlinx.coroutines.launch
 import kz.divtech.odyssey.drive.R
 import kz.divtech.odyssey.drive.common.DateTimeUtils.formatToDatePickerString
 import kz.divtech.odyssey.drive.common.DateTimeUtils.toLocalDate
@@ -48,7 +46,6 @@ import kz.divtech.odyssey.drive.common.Variables
 import kz.divtech.odyssey.drive.domain.model.main.Task
 import kz.divtech.odyssey.drive.presentation.theme.ColorPrimaryText
 import kz.divtech.odyssey.drive.presentation.theme.ColorTypoSecondary
-import kz.divtech.odyssey.drive.presentation.ui.screens.main.CenterCircularProgressIndicator
 import kz.divtech.odyssey.drive.presentation.ui.screens.task_detail.StatusText
 import java.time.LocalDate
 import java.util.Calendar
@@ -62,7 +59,6 @@ fun ActiveTasksScreen(viewModel: MyTasksViewModel,
     val scope = rememberCoroutineScope()
     val taskPagingItems: LazyPagingItems<Task> = viewModel.activeTaskState.collectAsLazyPagingItems()
 
-
     Column {
         setDatePickerDialog { selectedDate ->
             viewModel.getActiveTasks(selectedDate)
@@ -71,40 +67,36 @@ fun ActiveTasksScreen(viewModel: MyTasksViewModel,
             verticalArrangement = Arrangement.spacedBy(10.dp),
             contentPadding = PaddingValues(top = 10.dp, bottom = 24.dp)
         ) {
-            items(taskPagingItems.itemCount){ index ->
-                ActiveTaskItem(onTaskClicked, taskPagingItems[index]!!)
+            items(count = taskPagingItems.itemCount){ index ->
+                taskPagingItems[index]?.let { ActiveTaskItem(onTaskClicked, it) }
             }
-            taskPagingItems.apply {
-                when{
-                    loadState.refresh is LoadState.Loading -> {
-                        item { CenterCircularProgressIndicator() }
-                    }
 
-                    loadState.refresh is LoadState.Error -> {
-                        val error = taskPagingItems.loadState.refresh as LoadState.Error
-                        item {
-                            scope.launch {
-                                snackBarHostState.showSnackbar(error.error.localizedMessage!!)
-                            }
-                        }
-                    }
+//            taskPagingItems.apply {
+//                when{
+//                    loadState.refresh is LoadState.Loading -> {
+//                        item { CenterCircularProgressIndicator() }
+//                    }
+//
+//                    loadState.refresh is LoadState.Error -> {
+//                        val error = taskPagingItems.loadState.refresh as LoadState.Error
+//                        scope.launch {
+//                            snackBarHostState.showSnackbar(error.error.localizedMessage!!)
+//                        }
+//                    }
+//
+//                    loadState.append is LoadState.Loading -> {
+//                        item { CenterCircularProgressIndicator() }
+//                    }
+//
+//                    loadState.append is LoadState.Error -> {
+//                        val error = taskPagingItems.loadState.append as LoadState.Error
+//                        scope.launch {
+//                            snackBarHostState.showSnackbar(error.error.localizedMessage!!)
+//                        }
+//                    }
+//                }
+//            }
 
-                    loadState.append is LoadState.Loading -> {
-                        item {
-                            CenterCircularProgressIndicator()
-                        }
-                    }
-
-                    loadState.append is LoadState.Error -> {
-                        val error = taskPagingItems.loadState.append as LoadState.Error
-                        item {
-                            scope.launch {
-                                snackBarHostState.showSnackbar(error.error.localizedMessage!!)
-                            }
-                        }
-                    }
-                }
-            }
         }
     }
 }

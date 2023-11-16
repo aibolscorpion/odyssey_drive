@@ -21,7 +21,7 @@ class LoginViewModel @Inject constructor(private val loginUseCase: LoginUseCase)
 
     fun login(phoneNumber: String, password: String){
         viewModelScope.launch {
-                loginUseCase.login(LoginRequest(phoneNumber, password)).onEach { result ->
+                loginUseCase.execute(LoginRequest(phoneNumber, password)).onEach { result ->
                 when(result){
                     is Resource.Success -> {
                         _state.value = LoginState(loggedIn = result.data?.accessToken?.isNotBlank() ?: false)

@@ -10,6 +10,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kz.divtech.odyssey.drive.common.Constants.LOADING
 import javax.inject.Inject
 
 class DataStoreManager @Inject constructor(private val dataStore: DataStore<Preferences>) {
@@ -31,8 +32,7 @@ class DataStoreManager @Inject constructor(private val dataStore: DataStore<Pref
             }
     }
 
-
     @Composable
-    fun isLoggedIn() = getData(TOKEN_KEY).collectAsState("no_token").value.isNotEmpty()
+    fun getTokenValue() = getData(TOKEN_KEY).collectAsState(LOADING).value
 
 }
